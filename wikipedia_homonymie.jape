@@ -1,0 +1,137 @@
+Phase: estUn
+Input: Token SYNTAGME_NOMINAL
+Options: control=appelt debug=true
+
+
+Macro: SYNTAGME_NOMINAL
+(
+	({ Lookup.majorType == "terme" })
+)
+
+/*************************************************************************
+*		Rule 1 : YListeDeNX
+****************************************************************************/
+
+Rule: YListeDeX
+Priority: 20
+
+( 	
+		(SYNTAGME_NOMINAL):conceptX
+		({Token.string=="("})
+			(
+				((SYNTAGME_NOMINAL)):conceptY
+				( { Token.string=="," } )?
+				( { Token.category == "KON"} )?
+			)*
+		({Token.string==")"})
+)
+:estUn
+--> 
+:estUn.YListeDeX={rule="YListeDeX"},
+:estUn.hyperonymie={rule="YListeDeX"},
+:conceptX.ConceptX={rule="YListeDeX"},
+:conceptY.ConceptY={rule="YListeDeX"}
+
+
+Rule: YListeDeUnX
+Priority: 20
+
+( 	
+		(SYNTAGME_NOMINAL):conceptX
+		({Token.string=="("})
+			(
+				((SYNTAGME_NOMINAL)):conceptY
+			)
+		({Token.string==")"})
+)
+:estUn
+--> 
+:estUn.YListeDeUnX={rule="YListeDeUnX"},
+:estUn.hyperonymie={rule="YListeDeUnX"},
+:conceptX.ConceptX={rule="YListeDeUnX"},
+:conceptY.ConceptY={rule="YListeDeUnX"}
+
+/*************************************************************************
+*		Rule 2 : XVirguleY
+****************************************************************************/
+
+Rule: XVirguleY
+Priority: 20
+
+( 	
+
+	((SYNTAGME_NOMINAL)):conceptX
+	(( { Token.lemma == "," , Token.category == "PUN" } ) | ( { Token.lemma == ":" , Token.category == "PUN" } ))
+	((SYNTAGME_NOMINAL)):conceptY
+)	
+:estUn
+--> 
+:estUn.XVirguleY={rule="XVirguleY"},
+:estUn.hyperonymie={rule="XVirguleY"},
+:conceptX.ConceptX={rule="XVirguleY"},
+:conceptY.ConceptY={rule="XVirguleY"}
+
+
+/*************************************************************************
+*		Rule 3 : Patronyme_1
+****************************************************************************/
+
+Rule: Patronyme_1
+Priority: 20
+
+( 	
+	((SYNTAGME_NOMINAL)):conceptX
+	( 	{ Token.string == "(" } )
+	( 	{ Token.category == "NUM" } ):dateDeVie
+	( 	{ Token.string == ")" } )
+	( { Token.lemma == "," , Token.category == "PUN" } )
+	((SYNTAGME_NOMINAL)):conceptY
+)	
+:estUn
+--> 
+:estUn.Patronyme_1={rule="Patronyme_1"},
+:estUn.hyperonymie={rule="Patronyme_1"},
+:conceptX.ConceptX={rule="Patronyme_1"},
+:conceptY.ConceptY={rule="Patronyme_1"},
+:dateDeVie.DateDeVie={rule="Patronyme_1"}
+
+Rule: Patronyme_2
+Priority: 20
+
+( 	
+	((SYNTAGME_NOMINAL)):conceptX
+	( 	{ Token.string == "(" } )
+	( 	{ Token.string == "né"} | { Token.string == "née" })
+	( 	{ Token.string == "en" } )
+	( 	{ Token.category == "NUM" } ):dateNaissance
+	( 	{ Token.string == ")" } )
+	( { Token.lemma == "," , Token.category == "PUN" } )
+	((SYNTAGME_NOMINAL)):conceptY
+)	
+:estUn
+--> 
+:estUn.Patronyme_2={rule="Patronyme_2"},
+:estUn.hyperonymie={rule="Patronyme_2"},
+:conceptX.ConceptX={rule="Patronyme_2"},
+:conceptY.ConceptY={rule="Patronyme_2"},
+:dateNaissance.DateNaissance={rule="Patronyme_2"}
+
+/*************************************************************************
+*		Rule 4 : Toponyme
+****************************************************************************/
+
+Rule: Toponyme
+Priority: 20
+
+( 	
+	({Token.category == "PUN"})
+	((SYNTAGME_NOMINAL_6)):conceptX
+	( { Token.lemma == "," , Token.category == "PUN" } )
+	((SYNTAGME_NOMINAL)):conceptY
+)	
+:estUn
+--> 
+:estUn.Toponyme={rule="Toponyme"},
+:estUn.hyperonymie={rule="Toponyme"},
+:conceptX.ConceptX={rule="Toponyme"},
+:conceptY.ConceptY={rule="Toponyme"}

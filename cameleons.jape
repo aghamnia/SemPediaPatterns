@@ -1,0 +1,970 @@
+Phase: estUn
+Input: Token SYNTAGME_NOMINAL
+Options: control=appelt debug=true
+
+
+Macro: SYNTAGME_NOMINAL
+(
+	({ Lookup.majorType == "terme" })
+)
+
+
+
+/*************************************************************************
+*		Rule 1 : Etre_Un
+****************************************************************************/
+
+Rule: etreUn
+Priority: 20
+
+( 	
+	((SYNTAGME_NOMINAL)):conceptX
+	( 	{ Token.lemma == "être" , Token.category == "VER:ppre" } | 
+		{ Token.lemma == "être" , Token.category == "VER:pres" } | 
+		{ Token.lemma == "être" , Token.category == "VER:impf" } | 
+		{ Token.lemma == "être" , Token.category == "VER:simp" } | 
+		{ Token.lemma == "être" , Token.category == "VER:futu" } 
+	)
+	( 	{ Token.category == "ADV" } | { Token.category == "KON" } | { Token.category == "DET:ART" } | { Token.category == "DET:POS" } )?
+	((SYNTAGME_NOMINAL)):conceptY
+)	
+:estUn
+--> 
+:estUn.etreUn={rule="etreUn"},
+:estUn.hyperonymie={rule="etreUn"},
+:conceptX.ConceptX={rule="etreUn"},
+:conceptY.ConceptY={rule="etreUn"},
+
+
+/*************************************************************************
+*		Rule 2 : et_Adv_Y
+****************************************************************************/
+Rule: etAdvY
+Priority: 20
+
+( 	//(SYNTAGME_NOMINAL)):conceptX
+	({ Token.string == "," })?
+	{ Token.lemma == "et"}
+	({Token})?
+	( 	{ Token.category == "ADV" , Token.lemma == "notamment" } |
+		{ Token.category == "ADV" , Token.lemma == "notablement" } |
+		{ Token.category == "ADV" , Token.lemma == "spécialement" } |
+		{ Token.category == "ADV" , Token.lemma == "particulièrement" } |
+		{ Token.category == "ADV" , Token.lemma == "surtout" } |
+		{ Token.lemma == "par" }  { Token.lemma == "exemple" } |
+		{ Token.lemma == "en" }  { Token.lemma == "particulier" } |
+		{ Token.lemma == "avant" }  { Token.lemma == "tout" } 
+	)
+	((SYNTAGME_NOMINAL)):conceptY
+)
+:estUn
+--> 
+:estUn.etAdvY={rule="etAdvY"},
+:estUn.hyperonymie={rule="etAdvY"},
+:conceptY.ConceptY={rule="etAdvY"}
+
+
+/*************************************************************************
+*		Rule 3 : distinguer_Plusieurs_X_tels_Que_Y
+****************************************************************************/
+
+Rule: distinguerPlusieursXTelQueY
+Priority: 20
+
+( (
+	{Token.lemma == "distinguer", Token.category =="VER:pper" } | 
+	{Token.lemma == "distinguer", Token.category =="VER:ppre" } | 
+	{Token.lemma == "distinguer",Token.category == "VER:impf" } |
+	{Token.lemma == "distinguer",Token.category == "VER:simp" } |
+	{Token.lemma == "distinguer",Token.category == "VER:pres" } |
+	{Token.lemma == "distinguer",Token.category == "VER:futu" } |
+	
+	{Token.lemma == "reconnaître", Token.category =="VER:ppre" } | 
+	{Token.lemma == "reconnaître", Token.category =="VER:pper" } | 
+	{Token.lemma == "reconnaître",Token.category == "VER:impf" } |
+	{Token.lemma == "reconnaître",Token.category == "VER:simp" } |
+	{Token.lemma == "reconnaître",Token.category == "VER:pres" } |
+	{Token.lemma == "reconnaître",Token.category == "VER:futu" } |
+	
+	{Token.lemma == "différencier", Token.category =="VER:ppre" } | 
+	{Token.lemma == "différencier", Token.category =="VER:pper" } | 
+	{Token.lemma == "différencier",Token.category == "VER:impf" } |
+	{Token.lemma == "différencier",Token.category == "VER:simp" } |
+	{Token.lemma == "différencier",Token.category == "VER:pres" } |
+	{Token.lemma == "différencier",Token.category == "VER:futu" } |
+	
+	{Token.lemma == "discriminer", Token.category =="VER:ppre" } | 
+	{Token.lemma == "discriminer", Token.category =="VER:pper" } |
+	{Token.lemma == "discriminer",Token.category == "VER:impf" } |
+	{Token.lemma == "discriminer",Token.category == "VER:simp" } |
+	{Token.lemma == "discriminer",Token.category == "VER:pres" } |
+	{Token.lemma == "discriminer",Token.category == "VER:futu" } |
+	
+	{Token.lemma == "isoler", Token.category =="VER:ppre" } | 
+	{Token.lemma == "isoler", Token.category =="VER:pper" } | 
+	{Token.lemma == "isoler",Token.category == "VER:impf" } |
+	{Token.lemma == "isoler",Token.category == "VER:simp" } |
+	{Token.lemma == "isoler",Token.category == "VER:pres" } |
+	{Token.lemma == "isoler",Token.category == "VER:futu" } |
+	
+	{Token.lemma == "séparer", Token.category =="VER:ppre" } | 
+	{Token.lemma == "séparer", Token.category =="VER:pper" } | 
+	{Token.lemma == "séparer",Token.category == "VER:impf" } |
+	{Token.lemma == "séparer",Token.category == "VER:simp" } |
+	{Token.lemma == "séparer",Token.category == "VER:pres" } |
+	{Token.lemma == "séparer",Token.category == "VER:futu" } |
+	
+	{Token.lemma == "discerner", Token.category =="VER:ppre" } | 
+	{Token.lemma == "discerner", Token.category =="VER:pper" } |
+	{Token.lemma == "discerner",Token.category == "VER:impf" } |
+	{Token.lemma == "discerner",Token.category == "VER:simp" } |
+	{Token.lemma == "discerner",Token.category == "VER:pres" } |
+	{Token.lemma == "discerner",Token.category == "VER:futu" } |
+	
+	{Token.lemma == "remarquer", Token.category =="VER:ppre" } | 
+	{Token.lemma == "remarquer", Token.category =="VER:pper" } | 
+	{Token.lemma == "remarquer",Token.category == "VER:impf" } |
+	{Token.lemma == "remarquer",Token.category == "VER:simp" } |
+	{Token.lemma == "remarquer",Token.category == "VER:pres" } |
+	{Token.lemma == "remarquer",Token.category == "VER:futu" } 
+  )
+  ({Token})? ({Token})? ({Token})? ({Token})?
+  {Token.lemma=="plusieurs"}
+  (SYNTAGME_NOMINAL):conceptX
+  (  ({ Token.lemma == "tel"} { Token.lemma == "que"}) | { Token.lemma == "dont"} )
+  (SYNTAGME_NOMINAL):conceptY
+)
+:estUn
+--> 
+:estUn.distinguerPlusieursXTelQueY={rule="distinguerPlusieursXTelQueY"},
+:estUn.hyperonymie={rule="distinguerPlusieursXTelQueY"},
+:conceptX.ConceptX={rule="distinguerPlusieursXTelQueY"},
+:conceptY.ConceptY={rule="distinguerPlusieursXTelQueY"}
+
+/*************************************************************************
+*		Rule 4 : diversXcommeY
+****************************************************************************/
+Rule: diversXCommeY
+Priority: 20
+
+( 
+	{ Token.lemma == "divers"}
+	(SYNTAGME_NOMINAL):conceptX
+	{ Token.lemma == "comme"}
+	(SYNTAGME_NOMINAL):conceptY
+)
+:estUn
+--> 
+:estUn.diversXCommeY={rule="diversXCommeY"},
+:estUn.hyperonymie={rule="diversXCommeY"},
+:conceptX.ConceptX={rule="diversXCommeY"},
+:conceptY.ConceptY={rule="diversXCommeY"}
+
+/*************************************************************************
+*		Rule 5 : etreLePlusDeTousLesX
+****************************************************************************/
+Rule: etreLePlusDeTousLesX
+Priority: 20
+
+( 
+	( 	{ Token.lemma == "être" , Token.category == "VER:ppre" } | 
+		{ Token.lemma == "être" , Token.category == "VER:pres" } | 
+		{ Token.lemma == "être" , Token.category == "VER:impf" } | 
+		{ Token.lemma == "être" , Token.category == "VER:simp" } | 
+		{ Token.lemma == "être" , Token.category == "VER:futu" } 
+	)
+	({Token})?
+	{Token.category == "DET:ART", Token.lemma == "le" }
+	( {Token.lemma == "plus" } | {Token.lemma == "moins" })
+	({Token})?
+	{Token.lemma == "de" } {Token.lemma == "tout" } {Token.lemma == "le" }
+	(SYNTAGME_NOMINAL):conceptX
+)
+:estUn
+--> 
+:estUn.etreLePlusDeTousLesX={rule="etreLePlusDeTousLesX"},
+:estUn.hyperonymie={rule="etreLePlusDeTousLesX"},
+:conceptX.ConceptX={rule="etreLePlusDeTousLesX"}
+
+
+/*************************************************************************
+*		Rule 6 : etreLeXLePlus
+****************************************************************************/
+
+Rule: etreLeXlePlus
+Priority: 20
+
+( 
+	( 	{ Token.lemma == "être" , Token.category == "VER:ppre" } | 
+		{ Token.lemma == "être" , Token.category == "VER:pres" } | 
+		{ Token.lemma == "être" , Token.category == "VER:impf" } | 
+		{ Token.lemma == "être" , Token.category == "VER:simp" } | 
+		{ Token.lemma == "être" , Token.category == "VER:futu" } 
+	)
+	({Token})?
+	{Token.category == "DET:ART", Token.lemma == "le" }
+	((SYNTAGME_NOMINAL)*):conceptX
+	( { Token.category == "DET:ART" , Token.lemma == "le" } | { Token.category == "DET:POS" , Token.lemma == "le" } )
+	( { Token.lemma == "plus" } | { Token.lemma == "moins" } )
+)
+:estUn
+--> 
+:estUn.etreLeXlePlus={rule="etreLeXlePlus"},
+:estUn.hyperonymie={rule="etreLeXlePlus"},
+:conceptX.ConceptX={rule="etreLeXlePlus"}
+
+/*************************************************************************
+*		Rule 7 : etreUnXTrès
+****************************************************************************/
+Phase: estUn
+Input: Token
+Options: control=appelt debug=true
+
+Rule: etreUnXTres
+Priority: 20
+
+( 	
+	
+	( 	{ Token.lemma == "être" , Token.category == "VER:ppre" } | 
+		{ Token.lemma == "être" , Token.category == "VER:pres" } | 
+		{ Token.lemma == "être" , Token.category == "VER:impf" } | 
+		{ Token.lemma == "être" , Token.category == "VER:simp" } | 
+		{ Token.lemma == "être" , Token.category == "VER:pper" } | 
+		{ Token.lemma == "être" , Token.category == "VER:futu" } 
+	)
+	( { Token } )?  { Token.category == "DET:ART" }
+	( 	{ Token.category == "ADJ" } | { Token.category == "ADV" } | { Token.category == "PRP" } |
+		{ Token.category == "PRP:det" } | { Token.category == "NOM" } | { Token.category == "KON" } 
+	)?
+	( 	{ Token.category == "ADJ" } | { Token.category == "ADV" } | { Token.category == "PRP" } |
+		{ Token.category == "PRP:det" } | { Token.category == "NOM" } | { Token.category == "KON" } 
+	)?	
+	( 	{ Token.category == "ADJ" } | { Token.category == "ADV" } | { Token.category == "PRP" } |
+		{ Token.category == "PRP:det" } | { Token.category == "NOM" } | { Token.category == "KON" } 
+	)?	
+	( 	{ Token.category == "ADJ" } | { Token.category == "ADV" } | { Token.category == "PRP" } |
+		{ Token.category == "PRP:det" } | { Token.category == "NOM" } | { Token.category == "KON" } 
+	)?	 
+	( 	{ Token.category == "ADJ" } | { Token.category == "ADV" } | { Token.category == "PRP" } |
+		{ Token.category == "PRP:det" } | { Token.category == "NOM" } | { Token.category == "KON" } 
+	)?	
+	( 	{ Token.category == "ADJ" } | { Token.category == "ADV" } | { Token.category == "PRP" } |
+		{ Token.category == "PRP:det" } | { Token.category == "NOM" } | { Token.category == "KON" } 
+	)?	
+	( { Token.lemma == "très" } | { Token.lemma == "absolument" } )
+
+)
+:estUn
+--> 
+:estUn.etreUnXTres={rule="etreUnXTres"},
+:estUn.hyperonymie={rule="etreUnXTres"}
+
+/*************************************************************************
+*		Rule 7 : etreUnXTrès2
+****************************************************************************/
+Rule: etreUnXTres2
+Priority: 20
+
+( 	
+	
+	( 	{ Token.lemma == "être" , Token.category == "VER:ppre" } | 
+		{ Token.lemma == "être" , Token.category == "VER:pres" } | 
+		{ Token.lemma == "être" , Token.category == "VER:impf" } | 
+		{ Token.lemma == "être" , Token.category == "VER:simp" } | 
+		{ Token.lemma == "être" , Token.category == "VER:pper" } | 
+		{ Token.lemma == "être" , Token.category == "VER:futu" } 
+	)
+	( { Token } )?  { Token.category == "DET:ART" }
+	//( { Token } )*
+	( { Token.lemma == "très" } | { Token.lemma == "absolument" } )
+
+)
+:estUn
+--> 
+:estUn.etreUnXTres2={rule="etreUnXTres2"},
+:estUn.hyperonymie={rule="etreUnXTres2"}
+
+/*************************************************************************
+*		Rule 8 : etAutres
+****************************************************************************/
+Rule: etAutres
+Priority: 20
+
+( 
+	((SYNTAGME_NOMINAL)*):conceptX
+	({ Token.string == "," })?
+	( { Token.lemma == "et"} | { Token.lemma == "ou"} )
+	( { Token.lemma == "de"} | { Token.lemma == "tout"} )?
+	{ Token.lemma == "autre"}
+	((SYNTAGME_NOMINAL)*):conceptY
+)
+:estUn
+--> 
+:estUn.etAutres={rule="etAutres"},
+:estUn.hyperonymie={rule="etAutres"},
+:conceptX.ConceptX={rule="etAutres"},
+:conceptY.ConceptY={rule="etAutres"}
+
+
+/*************************************************************************
+*		Rule 10 : inclusion1XY
+****************************************************************************/
+Rule: inclusion1XY
+Priority: 20
+
+( 	
+	
+	 	{ Token.lemma == "parmi" }
+		( { Token.lemma == "tout" } )?
+		( { Token.category == "DET:ART" } | { Token.category == "PRP:det" } )
+		(SYNTAGME_NOMINAL):conceptX
+		{ Token.string == "," } { Token.category == "DET:ART" }
+		(SYNTAGME_NOMINAL):conceptY
+		( { Token.category == "VER:subi" } | { Token.category == "VER:pres" } | { Token.category == "VER:ppre" } |
+			{ Token.category == "VER:futu" } | { Token.category == "VER:simp" } | { Token.category == "VER:cond" } |
+			{ Token.category == "VER:subp" } | { Token.category == "VER:impf" } 
+		)
+
+)
+:estUn
+--> 
+:estUn.inclusion1XY={rule="inclusion1XY"},
+:estUn.hyperonymie={rule="inclusion1XY"},
+:conceptX.ConceptX={rule="inclusion1XY"},
+:conceptY.ConceptY={rule="inclusion1XY"}
+
+/*************************************************************************
+*		Rule 11 : inclusion2XY
+****************************************************************************/
+Rule: inclusion2XY
+Priority: 20
+
+( 	
+	
+	 	( { Token.lemma == "dans" } | { Token.lemma == "au" } )
+		( { Token.category == "DET:ART" } )?
+		( { Token.lemma == "ensemble" } | { Token.lemma == "nombre" } )
+		{ Token.category == "PRP:det" }
+		(SYNTAGME_NOMINAL):conceptX
+		{ Token.string == "," } { Token.category == "DET:ART" } 
+		(SYNTAGME_NOMINAL):conceptY
+		( { Token.category == "VER:subi" } | { Token.category == "VER:pres" } | { Token.category == "VER:ppre" } |
+			{ Token.category == "VER:futu" } | { Token.category == "VER:simp" } | { Token.category == "VER:cond" } |
+			{ Token.category == "VER:subp" } | { Token.category == "VER:impf" } 
+		)
+
+)
+:estUn
+--> 
+:estUn.inclusion2XY={rule="inclusion2XY"},
+:estUn.hyperonymie={rule="inclusion2XY"},
+:conceptX.ConceptX={rule="inclusion2XY"},
+:conceptY.ConceptY={rule="inclusion2XY"}
+
+/*************************************************************************
+*		Rule 12 : lePlusAdjDesXVirguleSoitY
+****************************************************************************/
+
+Rule: lePlusAdjDesXSoitY
+Priority: 20
+
+(
+	({Token.category == "DET:ART", Token.lemma == "le"} | {Token.category == "DET:POS", Token.lemma == "le"} )
+	(  {Token.lemma == "plus"} | {Token.lemma == "moins"} )
+	{Token.category == "ADJ" }
+	( 	{Token.lemma == "de", Token.category == "PRP:det"} | {Token.lemma == "du", Token.category == "PRP:det"} |
+		{Token.lemma == "de", Token.category == "PRP"} | {Token.lemma == "du", Token.category == "PRP"}
+	)
+	(SYNTAGME_NOMINAL):conceptX
+	({Token.category == "PUN", Token.string == ","} | {Token.category == "PUN:cit", Token.string == ","})
+	(	{ Token.lemma == "soit" } | ( {Token.string == "c"} {Token.string == "'"} {Token.string == "est"} {Token.string == "à"} {Token.string == "dire"} ) )
+	(SYNTAGME_NOMINAL):conceptY
+)
+:estUn
+--> 
+:estUn.lePlusAdjDesXSoitY={rule="lePlusAdjDesXSoitY"},
+:estUn.hyperonymie={rule="lePlusAdjDesXSoitY"},
+:conceptX.ConceptX={rule="lePlusAdjDesXSoitY"},
+:conceptY.ConceptY={rule="lePlusAdjDesXSoitY"}
+
+
+/*************************************************************************
+*		Rule 13 : sorteDe
+****************************************************************************/
+
+Rule: sorteDe
+Priority: 20
+
+(
+(SYNTAGME_NOMINAL):conceptX
+	
+(	{Token.category == "VER:simp", Token.lemma == "être"} | 
+	{Token.category == "VER:pper", Token.lemma == "être"} | 
+	{Token.category == "VER:impf", Token.lemma == "être"} | 
+	{Token.category == "VER:futu", Token.lemma == "être"} | 
+	{Token.category == "VER:pres", Token.lemma == "être"} | 
+	{Token.category == "VER:ppre", Token.lemma == "être"}
+)
+({Token})?
+{Token.category=="DET:ART"}
+(	{Token.lemma == "sorte"} |
+	{Token.lemma == "type"} |
+	{Token.lemma == "genre"} |
+	{Token.lemma == "style"} |
+	{Token.lemma == "variété"} |
+	{Token.lemma == "espèce"} 
+)
+({Token.string=="de"} | {Token.string=="d'"})
+(SYNTAGME_NOMINAL):conceptY
+)
+:estUn
+--> 
+:estUn.sorteDe={rule="SorteDe"},
+:estUn.hyperonymie={rule="SorteDe"},
+:conceptX.ConceptX={rule="SorteDe"},
+:conceptY.ConceptY={rule="SorteDe"}
+
+
+/*************************************************************************
+*		Rule 14 : toutAutreTypeDe
+****************************************************************************/
+
+Rule: toutAutreTypeDe
+Priority: 20
+
+(
+	(SYNTAGME_NOMINAL):conceptX
+	({Token.string == ","})?
+//	{Token.lemma == "ou"} 
+	{Token.lemma == "tout"} 
+	{Token.lemma == "autre"}
+	(
+		{Token.lemma == "type"} |
+		{Token.lemma == "genre"} |
+		{Token.lemma == "sorte"} |
+		{Token.lemma == "espèce"} |
+		{Token.lemma == "variété"} |
+		{Token.lemma == "style"} 
+	)
+	{Token.lemma == "de"}
+	(SYNTAGME_NOMINAL):conceptY
+)
+:estUn
+--> 
+:estUn.toutAutreTypeDe={rule="toutAutreTypeDe"},
+:estUn.hyperonymie={rule="toutAutreTypeDe"},
+:conceptX.ConceptX={rule="toutAutreTypeDe"},
+:conceptY.ConceptY={rule="toutAutreTypeDe"}
+
+/*************************************************************************
+*		Rule 15 : toutXestUnY
+****************************************************************************/
+
+
+Rule: toutXEstUnY
+Priority: 20
+
+( 	
+	
+	 	{ Token.lemma == "tout" } 
+		( { Token.category == "NOM" }  | { Token.category == "ADJ" } )
+		(SYNTAGME_NOMINAL):conceptX
+		( 	{ Token.category == "VER:pres" , Token.lemma == "être" } | 
+			{ Token.category == "VER:impf" , Token.lemma == "être" } | 
+			{ Token.category == "VER:ppre" , Token.lemma == "être" } | 
+			{ Token.category == "VER:futu" , Token.lemma == "être" } | 
+			{ Token.category == "VER:simp" , Token.lemma == "être" } 
+		)
+		( { Token.lemma == "un" } | { Token.lemma == "du" } )
+		(( 	{ Token.category == "PRP:det" } | { Token.category == "DET:ART" } | { Token.category == "DET:POS" } 
+		)):conceptY
+		
+
+)
+:estUn
+--> 
+:estUn.toutXEstUnY={rule="toutXEstUnY"},
+:estUn.hyperonymie={rule="toutXEstUnY"},
+:conceptX.ConceptX={rule="toutXEstUnY"},
+:conceptY.ConceptY={rule="toutXEstUnY"}
+
+
+/*************************************************************************
+*		Rule 16 : utiliserYcommeX
+****************************************************************************/
+
+
+Rule: utiliserYCommeX
+Priority: 20
+
+( 	
+		( 	{ Token.category == "VER:pres" , Token.lemma == "utiliser" } | 
+			{ Token.category == "VER:impf" , Token.lemma == "utiliser" } | 
+			{ Token.category == "VER:ppre" , Token.lemma == "utiliser" } | 
+			{ Token.category == "VER:futu" , Token.lemma == "utiliser" } | 
+			{ Token.category == "VER:simp" , Token.lemma == "utiliser" } 
+		)
+		(SYNTAGME_NOMINAL):conceptY
+		{ Token.lemma == "comme" } 
+		(SYNTAGME_NOMINAL):conceptX
+)
+:estUn
+--> 
+:estUn.utiliserYCommeX={rule="utiliserYCommeX"},
+:estUn.hyperonymie={rule="utiliserYCommeX"},
+:conceptX.ConceptX={rule="utiliserYCommeX"},
+:conceptY.ConceptY={rule="utiliserYCommeX"}
+
+
+
+
+/*************************************************************************
+*		Rule 17 : utiliserYenTantQueX
+****************************************************************************/
+
+
+Rule: utiliserYEnTantQueX
+Priority: 20
+
+( 	
+		( 	{ Token.category == "VER:pres" , Token.lemma == "utiliser" } | 
+			{ Token.category == "VER:impf" , Token.lemma == "utiliser" } | 
+			{ Token.category == "VER:ppre" , Token.lemma == "utiliser" } | 
+			{ Token.category == "VER:futu" , Token.lemma == "utiliser" } | 
+			{ Token.category == "VER:simp" , Token.lemma == "utiliser" } 
+		)
+		(SYNTAGME_NOMINAL):conceptY
+		{ Token.lemma == "en" } { Token.lemma == "tant" } { Token.lemma == "que" } 
+		(SYNTAGME_NOMINAL):conceptX
+)
+:estUn
+--> 
+:estUn.utiliserYEnTantQueX={rule="utiliserYEnTantQueX"},
+:estUn.hyperonymie={rule="utiliserYEnTantQueX"},
+:conceptX.ConceptX={rule="utiliserYEnTantQueX"},
+:conceptY.ConceptY={rule="utiliserYEnTantQueX"}
+
+
+/*************************************************************************
+*		Rule 18 : XAdvExc1Y
+****************************************************************************/
+
+Rule: XadvExc1Y
+Priority: 20
+
+( 	
+		(SYNTAGME_NOMINAL):conceptY
+		{ Token.string == "," }
+		( { Token.string == "sauf" } | { Token.string == "hormis" } | { Token.string == "excepté" } )
+		(SYNTAGME_NOMINAL):conceptX
+)
+:estUn
+--> 
+:estUn.XadvExc1Y={rule="XadvExc1Y"},
+:estUn.hyperonymie={rule="XadvExc1Y"},
+:conceptX.ConceptX={rule="XadvExc1Y"},
+:conceptY.ConceptY={rule="XadvExc1Y"}
+
+
+/*************************************************************************
+*		Rule 19 : XAdvExc2Y
+****************************************************************************/
+
+Rule: XadvExc2Y
+Priority: 20
+
+( 	
+		(SYNTAGME_NOMINAL):conceptY
+		{ Token.string == "," }
+		( { Token } )?  ( { Token } )?
+		{ Token.string == "exception" } 
+		( { Token } )?  ( { Token } )?
+		(SYNTAGME_NOMINAL):conceptX
+)
+:estUn
+--> 
+:estUn.XadvExc2Y={rule="XadvExc2Y"},
+:estUn.hyperonymie={rule="XadvExc2Y"},
+:conceptX.ConceptX={rule="XadvExc2Y"},
+:conceptY.ConceptY={rule="XadvExc2Y"}
+
+
+/*************************************************************************
+*		Rule 20 : XVirguleAdvY
+****************************************************************************/
+
+
+Rule: XadvY
+Priority: 20
+
+( 	
+		( SYNTAGME_NOMINAL ):conceptX
+		{ Token.string == "," }
+		(	{ Token.category == "ADV", Token.lemma == "notamment" } |
+			{ Token.category == "ADV", Token.lemma == "notablement" } |
+			{ Token.category == "ADV", Token.lemma == "spécialement" } |
+			{ Token.category == "ADV", Token.lemma == "particulièrement" } |
+			{ Token.category == "ADV", Token.lemma == "surtout" } |
+			{ Token.lemma == "par" }  { Token.lemma == "exemple" } |
+			{ Token.lemma == "en" }  { Token.lemma == "particulier" } |
+			{ Token.lemma == "avant" }  { Token.lemma == "tout" } 
+		)
+		( SYNTAGME_NOMINAL ):conceptY
+)
+:estUn
+--> 
+:estUn.XadvY={rule="XadvY"},
+:estUn.hyperonymie={rule="XadvY"},
+:conceptX.ConceptX={rule="XadvY"},
+:conceptY.ConceptY={rule="XadvY"}
+
+/*************************************************************************
+*		Rule 21 : XToutEnComptantY
+****************************************************************************/
+
+Rule: XadvY2
+Priority: 20
+
+( 	
+		(SYNTAGME_NOMINAL):conceptX
+		{ Token.string == "," }
+		{ Token.lemma == "tout" } { Token.lemma == "en" } { Token.lemma == "comptant" }
+		(SYNTAGME_NOMINAL):conceptY
+)
+:estUn
+--> 
+:estUn.XadvY2={rule="XadvY2"},
+:estUn.hyperonymie={rule="XadvY2"},
+:conceptX.ConceptX={rule="XadvY2"},
+:conceptY.ConceptY={rule="XadvY2"}
+
+
+/*************************************************************************
+*		Rule 22 : XYAdv
+****************************************************************************/
+
+Rule: XYAdv
+Priority: 20
+
+( 	
+		(SYNTAGME_NOMINAL):conceptX
+		{ Token.string == "," }
+		( { Token.category == "DET:ART" } | { Token.category == "DET:POS" } | { Token.category == "PRP:det" })
+		(SYNTAGME_NOMINAL):conceptY
+		(	{ Token.category == "ADV", Token.lemma == "notamment" } |
+			{ Token.category == "ADV", Token.lemma == "notablement" } |
+			{ Token.category == "ADV", Token.lemma == "spécialement" } |
+			{ Token.category == "ADV", Token.lemma == "particulièrement" } |
+			{ Token.category == "ADV", Token.lemma == "surtout" } 
+			{ Token.category == "ADV", Token.lemma == "surtout" } |
+			{ Token.lemma == "par" }  { Token.lemma == "exemple" } |
+			{ Token.lemma == "en" }  { Token.lemma == "particulier" } |
+			{ Token.lemma == "avant" }  { Token.lemma == "tout" } 
+		)
+)
+:estUn
+--> 
+:estUn.XYAdv={rule="XYAdv"},
+:estUn.hyperonymie={rule="XYAdv"},
+:conceptX.ConceptX={rule="XYAdv"},
+:conceptY.ConceptY={rule="XYAdv"}
+
+/*******************************************************************************
+*		Rule 23 : XyComprisY
+********************************************************************************/
+
+Rule: XyComprisY
+Priority: 20
+
+( 	
+		(SYNTAGME_NOMINAL):conceptX
+		{ Token.string == "," }
+		{ Token.lemma == "y" }
+		{ Token.string == "compris" }		
+		(SYNTAGME_NOMINAL):conceptY
+)
+:estUn
+--> 
+:estUn.XyComprisY={rule="XyComprisY"},
+:estUn.hyperonymie={rule="XyComprisY"},
+:conceptX.ConceptX={rule="XyComprisY"},
+:conceptY.ConceptY={rule="XyComprisY"}
+
+/*************************************************************************
+*		Rule 24 : XdesquelsY
+****************************************************************************/
+
+Rule: XdesquelsY
+Priority: 20
+
+( 	
+		(SYNTAGME_NOMINAL):conceptX
+		{ Token.string == "au" }
+		( { Token.lemma == "premier" } )?
+		( { Token.lemma == "nombre" } | 	{ Token.lemma == "rang" } )
+		{ Token.lemma == "quel" }
+		(SYNTAGME_NOMINAL):conceptY
+)
+:estUn
+--> 
+:estUn.XdesquelsY={rule="XdesquelsY"},
+:estUn.hyperonymie={rule="XdesquelsY"},
+:conceptX.ConceptX={rule="XdesquelsY"},
+:conceptY.ConceptY={rule="XdesquelsY"}
+
+/*************************************************************************
+*		Rule 25 : XestSpecialDeY
+****************************************************************************/
+Rule: XEstSpecialDeY
+Priority: 20
+
+( 	
+		(SYNTAGME_NOMINAL):conceptX
+		( 	{ Token.lemma == "être" , Token.category == "VER:ppre" } | 
+			{ Token.lemma == "être" , Token.category == "VER:pres" } | 
+			{ Token.lemma == "être" , Token.category == "VER:impf" } | 
+			{ Token.lemma == "être" , Token.category == "VER:simp" } | 
+			{ Token.lemma == "être" , Token.category == "VER:futu" } 
+		)
+		({ Token })? ({ Token })? ({ Token })? ({ Token })?
+		(  	{ Token.lemma == "spécification" } | { Token.lemma == "spécialisation" } | 
+			{ Token.lemma == "précision" } |  { Token.lemma == "détermination" } 
+		)
+		( { Token.lemma == "de" } | { Token.lemma == "du" } )
+		(SYNTAGME_NOMINAL):conceptY
+
+)
+:estUn
+--> 
+:estUn.XEstSpecialDeY={rule="XEstSpecialDeY"},
+:estUn.hyperonymie={rule="XEstSpecialDeY"},
+:conceptX.ConceptX={rule="XEstSpecialDeY"},
+:conceptY.ConceptY={rule="XEstSpecialDeY"}
+
+/*************************************************************************
+*		Rule 26 : XParmiLesQuelsY
+****************************************************************************/
+
+
+Rule: XParmiLesquelsY
+Priority: 20
+
+( 	
+		(SYNTAGME_NOMINAL):conceptX
+		{ Token.lemma == "parmi" } { Token.lemma == "lequel" } 
+		(SYNTAGME_NOMINAL):conceptY
+)
+:estUn
+--> 
+:estUn.XParmiLesquelsY={rule="XParmiLesquelsY"},
+:estUn.hyperonymie={rule="XParmiLesquelsY"},
+:conceptX.ConceptX={rule="XParmiLesquelsY"},
+:conceptY.ConceptY={rule="XParmiLesquelsY"}
+
+/*************************************************************************
+*		Rule 26 : XSePresenteSousFormeDeY
+****************************************************************************/
+
+Rule: XSEPresenteSousFormeDeY
+Priority: 20
+
+( 	
+		(SYNTAGME_NOMINAL):conceptX
+		{ Token.lemma == "se" } 
+		( { Token.category == "VER:simp", Token.lemma =="présenter" } |
+		  { Token.category == "VER:impf", Token.lemma =="présenter" } |
+		  { Token.category == "VER:pres", Token.lemma =="présenter" } |
+		  { Token.category == "NOM", Token.lemma =="présenter" } |
+		  { Token.category == "VER:futu", Token.lemma =="présenter" } |
+		  { Token.category == "ADJ", Token.lemma =="présenter" } |
+		  { Token.category == "VER:ppre", Token.lemma =="présenter" } 
+		)
+		({ Token })? ({ Token })?
+		( { Token.lemma == "sous" } | { Token.lemma == "en" } )
+		({ Token })? ({ Token })? ({ Token })? 
+		{ Token.lemma == "forme" }
+		(SYNTAGME_NOMINAL):conceptY
+
+)
+:estUn
+--> 
+:estUn.XSEPresenteSousFormeDeY={rule="XSEPresenteSousFormeDeY"},
+:estUn.hyperonymie={rule="XSEPresenteSousFormeDeY"},
+:conceptX.ConceptX={rule="XSEPresenteSousFormeDeY"},
+:conceptY.ConceptY={rule="XSEPresenteSousFormeDeY"}
+
+/*************************************************************************
+*		Rule 27 : XvSpecialdeY
+****************************************************************************/
+
+Rule: XvSpecialDeY
+Priority: 20
+
+( 	
+		(SYNTAGME_NOMINAL):conceptX
+		( { Token.category == "VER:simp", Token.lemma =="former" } |
+		  { Token.category == "VER:impf", Token.lemma =="former" } |
+		  { Token.category == "VER:pres", Token.lemma =="former" } |
+		  { Token.category == "VER:futu", Token.lemma =="former" } |
+		  { Token.category == "VER:ppre", Token.lemma =="former" } |
+		  { Token.category == "VER:simp", Token.lemma =="représenter" } |
+		  { Token.category == "VER:impf", Token.lemma =="représenter" } |
+		  { Token.category == "VER:pres", Token.lemma =="représenter" } |
+		  { Token.category == "VER:futu", Token.lemma =="représenter" } |
+		  { Token.category == "VER:ppre", Token.lemma =="représenter" } |
+		  
+		  { Token.category == "VER:simp", Token.lemma =="constituer" } |
+		  { Token.category == "VER:impf", Token.lemma =="constituer" } |
+		  { Token.category == "VER:pres", Token.lemma =="constituer" } |
+		  { Token.category == "VER:futu", Token.lemma =="constituer" } |
+		  { Token.category == "VER:ppre", Token.lemma =="constituer" } |
+		  
+		  { Token.category == "VER:simp", Token.lemma =="consister" } |
+		  { Token.category == "VER:impf", Token.lemma =="consister" } |
+		  { Token.category == "VER:pres", Token.lemma =="consister" } |
+		  { Token.category == "VER:futu", Token.lemma =="consister" } |
+		  { Token.category == "VER:ppre", Token.lemma =="consister" } 	  
+		)
+		({ Token })? ({ Token })? ({ Token })? ({ Token })?
+		( { Token.lemma == "spécification" } | { Token.lemma == "spécialisation" } | 
+		  { Token.lemma == "précision" } | { Token.lemma == "détermination" }
+		)
+		( { Token.lemma == "de" } | { Token.lemma == "du" } )
+		(SYNTAGME_NOMINAL):conceptY
+
+)
+:estUn
+--> 
+:estUn.XvSpecialDeY={rule="XvSpecialDeY"},
+:estUn.hyperonymie={rule="XvSpecialDeY"},
+:conceptX.ConceptX={rule="XvSpecialDeY"},
+:conceptY.ConceptY={rule="XvSpecialDeY"}
+
+
+/*************************************************************************
+*		Rule 28 : YappClasseX
+****************************************************************************/
+
+Rule: YAppClasseX
+Priority: 20
+
+( 	
+		(SYNTAGME_NOMINAL):conceptX
+		( { Token.category == "VER:simp", Token.lemma =="appartenir" } |
+		  { Token.category == "VER:impf", Token.lemma =="appartenir" } |
+		  { Token.category == "VER:pres", Token.lemma =="appartenir" } |
+		  { Token.category == "VER:futu", Token.lemma =="appartenir" } |
+		  { Token.category == "VER:ppre", Token.lemma =="appartenir" } |
+		  
+		  { Token.category == "VER:simp", Token.lemma =="ressembler" } |
+		  { Token.category == "VER:impf", Token.lemma =="ressembler" } |
+		  { Token.category == "VER:pres", Token.lemma =="ressembler" } |
+		  { Token.category == "VER:futu", Token.lemma =="ressembler" } |
+		  { Token.category == "VER:ppre", Token.lemma =="ressembler" } |
+		  
+		  { Token.category == "VER:simp", Token.lemma =="dériver" } |
+		  { Token.category == "VER:impf", Token.lemma =="dériver" } |
+		  { Token.category == "VER:pres", Token.lemma =="dériver" } |
+		  { Token.category == "VER:futu", Token.lemma =="dériver" } |
+		  { Token.category == "VER:ppre", Token.lemma =="dériver" }   
+		)
+		({ Token })? ({ Token })? 
+		( { Token.lemma == "à" } | { Token.lemma == "de" } | { Token.lemma == "du" } )
+		({ Token })? 
+		( { Token.lemma == "classe" } | { Token.lemma == "caste" } | { Token.lemma == "catégorie" } |
+		  { Token.lemma == "groupe" } | { Token.lemma == "division" } | { Token.lemma == "espèce" } | 
+		  { Token.lemma == "sorte" } | { Token.lemma == "race" } | { Token.lemma == "ensemble" } |
+		  { Token.lemma == "variété" } | { Token.lemma == "type" } | { Token.lemma == "modèle" } |
+		  { Token.lemma == "famille" } | { Token.lemma == "genre" } | { Token.lemma == "collection" } |
+		  { Token.lemma == "partie" } 
+		)
+		(SYNTAGME_NOMINAL):conceptY
+
+)
+:estUn
+--> 
+:estUn.YAppClasseX={rule="YAppClasseX"},
+:estUn.hyperonymie={rule="YAppClasseX"},
+:conceptX.ConceptX={rule="YAppClasseX"},
+:conceptY.ConceptY={rule="YAppClasseX"}
+
+/*************************************************************************
+*		Rule 29 : YvirguleLePlusAdjDesX
+****************************************************************************/
+
+Rule: YVirguleLePlusAdjdesX
+Priority: 20
+
+( 	
+		(SYNTAGME_NOMINAL):conceptY
+		{ Token.string == "," }
+		{ Token.category == "DET:ART", Token.lemma == "le" }
+		( { Token.lemma == "plus" } | { Token.lemma == "moins" } )
+		{ Token.category == "ADJ" }
+		( 	{ Token.category == "PRP", Token.lemma == "de" } |
+			{ Token.category == "PRP", Token.lemma == "du" } |
+			{ Token.category == "PRP:det", Token.lemma == "de" } |
+			{ Token.category == "PRP:det", Token.lemma == "du" } 
+		)
+		(SYNTAGME_NOMINAL):conceptX
+)
+:estUn
+--> 
+:estUn.YVirguleLePlusAdjdesX={rule="YVirguleLePlusAdjdesX"},
+:estUn.hyperonymie={rule="YVirguleLePlusAdjdesX"},
+:conceptX.ConceptX={rule="YVirguleLePlusAdjdesX"},
+:conceptY.ConceptY={rule="YVirguleLePlusAdjdesX"}
+
+/*************************************************************************
+*		Rule 29 : YvirguleLeXLePlus
+****************************************************************************/
+
+Rule: YVirguleLeXLePlus
+Priority: 20
+
+( 	
+		(SYNTAGME_NOMINAL):conceptY
+		{ Token.string == "," }
+		{ Token.category == "DET:ART", Token.lemma == "le" }
+		( 	{ Token.category == "PRP:det" } | { Token.category == "PRP" } | { Token.category == "NOM" } |
+			{ Token.category == "ADJ" } | { Token.category == "DET:ART" } | { Token.category == "DET:POS" } |
+			{ Token.category == "KON" } | { Token.category == "ADV" } 
+		)*
+		{ Token.category == "DET:ART", Token.lemma == "le" }
+		( { Token.lemma == "plus" } | { Token.lemma == "moins" } )
+		(SYNTAGME_NOMINAL):conceptX
+		{ Token.string == "," }
+)
+:estUn
+--> 
+:estUn.YVirguleLeXLePlus={rule="YVirguleLeXLePlus"},
+:estUn.hyperonymie={rule="YVirguleLeXLePlus"},
+:conceptX.ConceptX={rule="YVirguleLePlusAdjdesX"},
+:conceptY.ConceptY={rule="YVirguleLePlusAdjdesX"}
+
+
+/***************************************************************************
+*		Rule 30 : XvAdvY
+******************************************************************************/
+
+Rule: XvAdvY
+Priority: 20
+
+( 	
+		(SYNTAGME_NOMINAL):conceptX
+		( 	{ Token.category == "VER:pres"  } | 
+			{ Token.category == "VER:impf"  } | 
+			{ Token.category == "VER:ppre"  } | 
+			{ Token.category == "VER:futu" } | 
+			{ Token.category == "VER:simp" } 
+		)
+		({ Token })?
+		( { Token.lemma == "comme" } | { Token.lemma == "tel" } {Token.lemma == "que"} )
+		(SYNTAGME_NOMINAL):conceptY
+)
+:estUn
+--> 
+:estUn.XvAdvY={rule="XvAdvY"},
+:estUn.hyperonymie={rule="XvAdvY"},
+:conceptX.ConceptX={rule="XvAdvY"},
+:conceptY.ConceptY={rule="XvAdvY"}
